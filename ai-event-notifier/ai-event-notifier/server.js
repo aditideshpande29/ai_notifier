@@ -39,15 +39,15 @@ app.post("/webhook", async (req, res) => {
     console.log("\nSending commit to Gemini AI...");
 
     const aiRes = await axios.post(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        contents: [{
-          parts: [{
-            text: `Summarize this GitHub commit and explain its impact:\n${message}`
-          }]
-        }]
-      }
-    );
+  `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+  {
+    contents: [{
+      parts: [{
+        text: `Summarize this GitHub commit and explain its impact:\n${message}`
+      }]
+    }]
+  }
+);
 
     const summary =
       aiRes.data.candidates[0].content.parts[0].text;
