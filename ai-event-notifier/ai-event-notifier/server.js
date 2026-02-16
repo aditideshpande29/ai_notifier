@@ -8,26 +8,35 @@ dotenv.config();
 const app = express();
 app.use(bodyParser.json());
 
-// Test route
+/* -------------------------------
+   Test route (browser check)
+--------------------------------*/
 app.get("/", (req, res) => {
   res.send("Server is running ✅");
 });
 
-// Webhook route
+/* -------------------------------
+   GitHub Webhook Route
+--------------------------------*/
 app.post("/webhook", async (req, res) => {
 
   const commit = req.body.head_commit;
 
   if (!commit) {
+    console.log("No commit data received");
     return res.sendStatus(200);
   }
 
   const message = commit.message;
   const author = commit.author.name;
 
-  console.log("Commit received:", message);
+  console.log("\n🚀 Commit received");
+  console.log("Author:", author);
+  console.log("Message:", message);
 
   try {
+
+    console.log("\nSending commit to Gemini AI...");
 
     const aiRes = await axios.post(
       `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
@@ -43,17 +52,22 @@ app.post("/webhook", async (req, res) => {
     const summary =
       aiRes.data.candidates[0].content.parts[0].text;
 
-    console.log("AI Summary:");
+    console.log("\n🧠 AI Summary:");
     console.log(summary);
 
   } catch (err) {
-    console.log("Gemini error:", err.message);
+
+    console.log("\n❌ Gemini Error:");
+    console.log(err.response?.data || err.message);
+
   }
 
   res.sendStatus(200);
 });
 
+/* -------------------------------
+   Start Server
+--------------------------------*/
 app.listen(3000, () => {
-  console.log("Server running on port 3000 🚀");
+  console.log("\nServer running on port 3000 🚀");
 });
-// webhook test change
