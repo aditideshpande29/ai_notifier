@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const axios = require("axios");
+console.log("Loaded API Key:", process.env.GEMINI_API_KEY);
 
 dotenv.config();
 
