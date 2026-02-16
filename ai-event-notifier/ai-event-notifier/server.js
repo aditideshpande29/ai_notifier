@@ -1,20 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
-
-dotenv.config();
-
-const app = express();
-app.use(bodyParser.json());
-
-// Test route
-app.get("/", (req, res) => {
-  res.send("Server is running ✅");
-});
-
-const express = require("express");
-const bodyParser = require("body-parser");
-const dotenv = require("dotenv");
 const axios = require("axios");
 
 dotenv.config();
@@ -43,7 +29,6 @@ app.post("/webhook", async (req, res) => {
 
   try {
 
-    // Send to Gemini
     const aiRes = await axios.post(
       `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
@@ -71,8 +56,4 @@ app.post("/webhook", async (req, res) => {
 app.listen(3000, () => {
   console.log("Server running on port 3000 🚀");
 });
-
-
-app.listen(3000, () => {
-  console.log("Server running on port 3000 🚀");
-});
+// webhook test change
