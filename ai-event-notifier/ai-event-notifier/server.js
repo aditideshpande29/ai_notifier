@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash"
+  model: "gemini-1.0-pro"
 });
 
 /* ================================
@@ -80,3 +80,4 @@ app.listen(3000, () => {
   console.log("\nServer running on port 3000 🚀");
 });
 // test after enabling API
+//wow
