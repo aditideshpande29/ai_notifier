@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 const axios = require("axios");
 
 const DISCORD_WEBHOOK =
-  "PASTE_YOUR_WEBHOOK_URL_HERE";
+  "https://discord.com/api/webhooks/1473197440403247204/BHZEIRdTNjVojApcHJxhDCDYoZn1QHFZYCZaFj3kYkU-FKG3B6eYuCr5bVM44eI1esiG";
 
 
 /* ================================
