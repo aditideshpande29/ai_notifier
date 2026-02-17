@@ -7,6 +7,12 @@ const bodyParser = require("body-parser");
 const app = express();
 app.use(bodyParser.json());
 
+const axios = require("axios");
+
+const DISCORD_WEBHOOK =
+  "PASTE_YOUR_WEBHOOK_URL_HERE";
+
+
 /* ================================
    STORE LATEST COMMIT
 ================================ */
@@ -22,22 +28,39 @@ app.get("/", (req, res) => {
 /* ================================
    WEBHOOK ROUTE
 ================================ */
-app.post("/webhook", (req, res) => {
+app.post("/webhook", async (req, res) => {
 
   const commit = req.body.head_commit;
 
   if (!commit) {
-    console.log("No commit data received");
     return res.sendStatus(200);
   }
 
-  latestCommit = commit.message;
+  const message = commit.message;
+  const author = commit.author.name;
 
   console.log("\n🚀 Commit received");
-  console.log("Message:", latestCommit);
+  console.log("Message:", message);
+
+  /* ---- DISCORD SEND ---- */
+  try {
+
+    await axios.post(DISCORD_WEBHOOK, {
+      content:
+        `🚀 **New Commit**\n` +
+        `👤 Author: ${author}\n` +
+        `📝 Message: ${message}`
+    });
+
+    console.log("Discord notification sent ✅");
+
+  } catch (err) {
+    console.log("Discord error:", err.message);
+  }
 
   res.sendStatus(200);
 });
+
 
 /* ================================
    SEND COMMIT TO FRONTEND
