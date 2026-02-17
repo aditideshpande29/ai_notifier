@@ -3,16 +3,14 @@
 ================================ */
 const express = require("express");
 const bodyParser = require("body-parser");
-const dotenv = require("dotenv");
-const axios = require("axios");
-
-/* ================================
-   CONFIG
-================================ */
-dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
+
+/* ================================
+   STORE LATEST COMMIT
+================================ */
+let latestCommit = "No commits yet";
 
 /* ================================
    TEST ROUTE
@@ -22,42 +20,9 @@ app.get("/", (req, res) => {
 });
 
 /* ================================
-   GEMINI SUMMARY FUNCTION
+   WEBHOOK ROUTE
 ================================ */
-async function getSummary(message) {
-  try {
-
-    const res = await axios.post(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        contents: [
-          {
-            parts: [
-              {
-                text: `Summarize this GitHub commit and explain its impact:\n${message}`
-              }
-            ]
-          }
-        ]
-      }
-    );
-
-    return res.data.candidates[0].content.parts[0].text;
-
-  } catch (err) {
-
-    console.log("\n❌ Gemini Error:");
-    console.log(err.response?.data || err.message);
-
-    return "AI summary failed.";
-
-  }
-}
-
-/* ================================
-   GITHUB WEBHOOK
-================================ */
-app.post("/webhook", async (req, res) => {
+app.post("/webhook", (req, res) => {
 
   const commit = req.body.head_commit;
 
@@ -66,19 +31,19 @@ app.post("/webhook", async (req, res) => {
     return res.sendStatus(200);
   }
 
-  const message = commit.message;
-  const author = commit.author.name;
+  latestCommit = commit.message;
 
   console.log("\n🚀 Commit received");
-  console.log("Author:", author);
-  console.log("Message:", message);
-
-  const summary = await getSummary(message);
-
-  console.log("\n🧠 AI Summary:");
-  console.log(summary);
+  console.log("Message:", latestCommit);
 
   res.sendStatus(200);
+});
+
+/* ================================
+   SEND COMMIT TO FRONTEND
+================================ */
+app.get("/latest", (req, res) => {
+  res.json({ message: latestCommit });
 });
 
 /* ================================
